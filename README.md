@@ -16,7 +16,7 @@
 ## Instalación
 1. Clona el repositorio:
 	 ```bash
-	 git clone <url-del-repo>
+	 git clone https://github.com/JoaquinTonizzo/ecommerce-api-final.git
 	 cd ecommerce-api-final
 	 ```
 2. Instala dependencias:
