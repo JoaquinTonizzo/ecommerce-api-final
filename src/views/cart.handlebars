@@ -1,0 +1,90 @@
+<script>
+  document.title = 'Carrito | Ecommerce';
+</script>
+
+<link rel="stylesheet" href="/css/cart.css">
+<main class="cart-main">
+  <div class="cart-container">
+    <h2 class="cart-title">Carrito</h2>
+    <div id="cart-products" style="width:100%;">
+      {{#if products.length}}
+      <ul>
+        {{#each products}}
+        <li data-pid="{{product._id}}" class="cart-item">
+          <strong class="cart-item-title">{{product.title}}</strong>
+          <div class="cart-item-controls">
+            <button class="qty-btn" onclick="updateQty('{{../cartId}}','{{product._id}}',-1,{{quantity}})">-</button>
+            <span class="qty">{{quantity}}</span>
+            <button class="qty-btn" onclick="updateQty('{{../cartId}}','{{product._id}}',1,{{quantity}})">+</button>
+          </div>
+          <span class="cart-item-price">Precio: ${{product.price}}</span>
+          <span class="cart-item-subtotal">Subtotal: ${{multiply product.price quantity}}</span>
+          <span class="cart-item-category">Categoría: {{product.category}}</span>
+        </li>
+        {{/each}}
+      </ul>
+      <div id="cart-total"></div>
+      {{else}}
+      <p style="color:#fff; text-align:center;">El carrito está vacío.</p>
+      {{/if}}
+    </div>
+  </div>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script>
+    // Calcular y mostrar el total
+    (function () {
+      const items = document.querySelectorAll('#cart-products li');
+      let total = 0;
+      items.forEach(li => {
+        const qty = parseInt(li.querySelector('.qty').textContent);
+        // Buscar el span que contiene el precio
+        const priceSpan = Array.from(li.querySelectorAll('span')).find(s => s.textContent.startsWith('Precio: $'));
+        const price = priceSpan ? parseFloat(priceSpan.textContent.replace('Precio: $', '')) : 0;
+        total += qty * price;
+      });
+      if (items.length) {
+        document.getElementById('cart-total').textContent = 'Total: $' + total.toFixed(2);
+      }
+    })();
+
+    // Obtener cartId de la URL
+    function getCartId() {
+      const match = window.location.pathname.match(/\/carts\/(\w+)/);
+      return match ? match[1] : null;
+    }
+
+    // Actualizar cantidad o eliminar producto
+    window.updateQty = function (cartId, productId, delta, currentQty) {
+      if (!cartId) cartId = getCartId();
+      if (delta === -1 && currentQty <= 1) {
+        // Eliminar producto
+        fetch(`/api/carts/${cartId}/products/${productId}`, { method: 'DELETE' })
+          .then(async r => {
+            if (!r.ok) {
+              const data = await r.json().catch(() => ({}));
+              Toastify({ text: data.message || data.error || 'No se pudo eliminar el producto', duration: 3500, gravity: 'top', position: 'right', backgroundColor: '#dc3545' }).showToast();
+            } else {
+              Toastify({ text: 'Producto eliminado del carrito', duration: 2000, gravity: 'top', position: 'right', backgroundColor: '#28a745' }).showToast();
+              setTimeout(() => location.reload(), 800);
+            }
+          });
+      } else {
+        // Actualizar cantidad
+        fetch(`/api/carts/${cartId}/products/${productId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ quantity: currentQty + delta })
+        }).then(async r => {
+          if (!r.ok) {
+            const data = await r.json().catch(() => ({}));
+            Toastify({ text: data.message || data.error || 'No se pudo actualizar la cantidad', duration: 3500, gravity: 'top', position: 'right', backgroundColor: '#dc3545' }).showToast();
+          } else {
+            Toastify({ text: 'Cantidad actualizada', duration: 1500, gravity: 'top', position: 'right', backgroundColor: '#28a745' }).showToast();
+            setTimeout(() => location.reload(), 600);
+          }
+        });
+      }
+    }
+  </script>
+</main>

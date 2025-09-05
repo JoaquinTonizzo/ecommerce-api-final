@@ -1,0 +1,118 @@
+body {
+    background: #181818 !important;
+}
+
+.cart-main {
+    background: #181818;
+}
+
+.cart-container {
+    max-width: 540px;
+    width: 100%;
+    background: #232323;
+    border-radius: 16px;
+    box-shadow: 0 4px 32px #0008;
+    padding: 32px 18px 24px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 38px auto;
+}
+
+.cart-title {
+    color: #ffd600;
+    text-align: center;
+    margin-bottom: 18px;
+    letter-spacing: 0.5px;
+    font-size: 1.45em;
+}
+
+#cart-products ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cart-item {
+    background: #181818;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    padding: 16px 12px;
+    box-shadow: 0 1px 8px #0005;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cart-item-title {
+    color: #ffd600;
+    font-size: 1.08em;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.cart-item-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.qty-btn {
+    background: #ffd600;
+    color: #181818;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 1.1em;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+}
+
+.qty {
+    color: #fff;
+    font-size: 1.13em;
+    min-width: 28px;
+    text-align: center;
+}
+
+.cart-item-price {
+    color: #e0e0e0;
+    font-size: 0.98em;
+    margin-bottom: 2px;
+}
+
+.cart-item-subtotal {
+    color: #ffd600;
+    font-weight: 600;
+    font-size: 1.01em;
+    margin-bottom: 2px;
+}
+
+.cart-item-category {
+    color: #e0e0e0;
+    font-size: 0.97em;
+}
+
+#cart-total {
+    margin-top: 18px;
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #ffd600;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .cart-container {
+        padding: 18px 4vw 18px 4vw;
+        border-radius: 10px;
+        margin: 18px auto;
+    }
+
+    .cart-item {
+        padding: 10px 4px;
+        border-radius: 7px;
+    }
+}

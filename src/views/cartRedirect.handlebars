@@ -1,0 +1,36 @@
+<script>
+  (async function () {
+    try {
+      let cartId = localStorage.getItem('cartId');
+      let exists = false;
+
+      if (cartId) {
+        // Verificar si el carrito existe en la BD
+        const resp = await fetch(`/api/carts/${cartId}`);
+        exists = resp.ok; // true si status 200
+      }
+
+      if (!cartId || !exists) {
+        // Crear un carrito nuevo vía API
+        const createResp = await fetch('/api/carts', { method: 'POST' });
+        if (!createResp.ok) throw new Error('No se pudo crear el carrito');
+        const data = await createResp.json();
+        cartId = data._id || data.id;
+        localStorage.setItem('cartId', cartId);
+      }
+
+      // Redirigir al carrito
+      window.location.href = '/carts/' + cartId;
+    } catch (err) {
+      // Mostrar error en pantalla
+      const main = document.querySelector('main');
+      if (main) main.innerHTML = '<h2>Error al acceder al carrito</h2><p>Intente nuevamente más tarde.</p>';
+      console.error(err);
+    }
+  })();
+</script>
+
+<main style="padding:32px; text-align:center; background:#181818; color:white;">
+  <h2 style="color: white;">Redirigiendo a tu carrito...</h2>
+  <p id="loader">⏳ Cargando...</p>
+</main>

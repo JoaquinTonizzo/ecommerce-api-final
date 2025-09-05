@@ -1,0 +1,59 @@
+<script>
+  document.title = '{{product.title}} | Ecommerce';
+</script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<link rel="stylesheet" href="/css/productDetail.css">
+<main class="product-detail-main">
+  <div class="product-detail">
+    <h2 class="product-detail-title">{{product.title}}</h2>
+    <div class="product-img-wrapper">
+      {{#if product.thumbnails}}
+        <img src="{{product.thumbnails.[0]}}" alt="Imagen" class="product-img">
+      {{else}}
+        <div class="product-img no-img" aria-label="Sin Imagen" title="Sin Imagen"></div>
+      {{/if}}
+    </div>
+    <div class="product-info">
+      <span><b>Descripción:</b> {{product.description}}</span>
+      <span><b>Código:</b> {{product.code}}</span>
+      <span class="product-price"><b>Precio:</b> ${{product.price}}</span>
+      <span><b>Stock:</b> {{product.stock}}</span>
+      {{#unless product.stock}}
+        <span class="product-stock-warning">Sin stock disponible</span>
+      {{/unless}}
+      <span><b>Categoría:</b> {{product.category}}</span>
+      <span><b>Status:</b> {{#if product.status}}<span class="product-status-activo">Activo</span>{{else}}<span class="product-status-inactivo">Inactivo</span>{{/if}}</span>
+      {{#unless product.status}}
+        <span class="product-inactive-warning">Producto inactivo</span>
+      {{/unless}}
+    </div>
+    <button class="add-cart-btn" onclick="addToCart('{{product._id}}')">Agregar al carrito</button>
+  </div>
+</main>
+<script>
+async function getOrCreateCartId() {
+  let cartId = localStorage.getItem('cartId');
+  if (!cartId) {
+    const res = await fetch('/api/carts', { method: 'POST' });
+    const data = await res.json();
+    cartId = data._id;
+    localStorage.setItem('cartId', cartId);
+  }
+  return cartId;
+}
+window.addToCart = async function(productId) {
+  const cartId = await getOrCreateCartId();
+  try {
+    const res = await fetch(`/api/carts/${cartId}/product/${productId}`, { method: 'POST' });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      Toastify({ text: data.message || data.error || 'No se pudo agregar al carrito', duration: 3500, gravity: 'top', position: 'right', backgroundColor: '#dc3545' }).showToast();
+    } else {
+      Toastify({ text: 'Producto agregado al carrito', duration: 2000, gravity: 'top', position: 'right', backgroundColor: '#28a745' }).showToast();
+    }
+  } catch {
+    Toastify({ text: 'Error de red', duration: 3500, gravity: 'top', position: 'right', backgroundColor: '#dc3545' }).showToast();
+  }
+}
+</script>

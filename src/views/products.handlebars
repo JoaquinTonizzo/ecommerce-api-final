@@ -1,0 +1,133 @@
+<link rel="stylesheet" href="/css/products.css">
+<script>
+  document.title = 'Productos | Ecommerce';
+</script>
+<main class="products-main">
+  <h2 class="products-title">Lista de productos</h2>
+  <form id="filter-form" class="products-filter-form">
+  <label for="category" class="products-filter-label">Categoría:</label>
+  <select id="category" name="category" class="products-filter-select">
+      <option value="" {{#unless queryCategory}}selected{{/unless}}>Todas</option>
+      {{#each categories}}
+        <option value="{{this}}" {{#if (eq ../queryCategory this)}}selected{{/if}}>{{this}}</option>
+      {{/each}}
+    </select>
+  <label for="status" class="products-filter-label">Disponibilidad:</label>
+  <select id="status" name="status" class="products-filter-select">
+      <option value="" {{#unless queryStatus}}selected{{/unless}}>Todas</option>
+      <option value="true" {{#if (eq queryStatus 'true')}}selected{{/if}}>Activo</option>
+      <option value="false" {{#if (eq queryStatus 'false')}}selected{{/if}}>Inactivo</option>
+    </select>
+  <label for="sort" class="products-filter-label">Ordenar por precio:</label>
+  <select id="sort" name="sort" class="products-filter-select">
+      <option value="" {{#unless sort}}selected{{/unless}}>Sin orden</option>
+      <option value="asc" {{#if (eq sort 'asc')}}selected{{/if}}>Ascendente</option>
+      <option value="desc" {{#if (eq sort 'desc')}}selected{{/if}}>Descendente</option>
+    </select>
+  <label for="limit" class="products-filter-label">Productos por página:</label>
+  <input type="number" id="limit" name="limit" min="1" value="{{limit}}" class="products-filter-input">
+  </form>
+  <div id="products-list">
+    {{#if products.length}}
+      {{#each products}}
+      <div class="product-item" data-id="{{_id}}">
+        <div class="product-img-wrapper">
+          {{#if thumbnails}}
+            <img src="{{thumbnails.[0]}}" alt="Imagen" class="product-img">
+          {{else}}
+            <div class="product-img no-img" aria-label="Sin Imagen" title="Sin Imagen"></div>
+          {{/if}}
+        </div>
+        <div class="product-info">
+          <strong class="product-title">{{title}}</strong>
+          <span class="product-desc"><b>Descripción:</b> {{description}}</span>
+          <span class="product-code"><b>Código:</b> {{code}}</span>
+          <span class="product-price"><b>Precio:</b> ${{price}}</span>
+          <span class="product-stock"><b>Stock:</b> {{stock}}</span>
+          {{#unless stock}}
+            <span style="color:#dc3545;font-weight:bold;">Sin stock disponible</span>
+          {{/unless}}
+          {{#unless status}}
+            <span style="color:#dc3545;font-weight:bold;">Producto inactivo</span>
+          {{/unless}}
+          <span class="product-category"><b>Categoría:</b> {{category}}</span>
+          <span class="product-status"><b>Status:</b> {{#if status}}Activo{{else}}Inactivo{{/if}}</span>
+        </div>
+        <a href="/products/{{_id}}" class="details-btn">Ver detalles</a>
+        <button class="add-cart-btn" onclick="addToCart('{{_id}}')">Agregar al carrito</button>
+      </div>
+      {{/each}}
+    {{else}}
+  <div class="products-empty">No hay productos.</div>
+    {{/if}}
+  </div>
+  <div class="pagination">
+    {{#if hasPrevPage}}
+      <a href="{{prevLink}}" class="pagination-btn">Anterior</a>
+    {{/if}}
+    <span class="pagination-info">Página {{page}} de {{totalPages}}</span>
+    {{#if hasNextPage}}
+      <a href="{{nextLink}}" class="pagination-btn">Siguiente</a>
+    {{/if}}
+  </div>
+</main>
+<script>
+async function getOrCreateCartId() {
+  let cartId = localStorage.getItem('cartId');
+  if (!cartId) {
+    const res = await fetch('/api/carts', { method: 'POST' });
+    const data = await res.json();
+    cartId = data._id;
+    localStorage.setItem('cartId', cartId);
+  }
+  return cartId;
+}
+window.addToCart = async function(productId) {
+  const cartId = await getOrCreateCartId();
+  try {
+    const res = await fetch(`/api/carts/${cartId}/product/${productId}`, { method: 'POST' });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      Toastify({ text: data.message || data.error || 'No se pudo agregar al carrito', duration: 3500, gravity: 'top', position: 'right', backgroundColor: '#dc3545' }).showToast();
+    } else {
+      Toastify({ text: 'Producto agregado al carrito', duration: 2000, gravity: 'top', position: 'right', backgroundColor: '#28a745' }).showToast();
+    }
+  } catch {
+    Toastify({ text: 'Error de red', duration: 3500, gravity: 'top', position: 'right', backgroundColor: '#dc3545' }).showToast();
+  }
+}
+const filterForm = document.getElementById('filter-form');
+const filterKeys = ['category', 'status', 'sort', 'limit'];
+// Restaurar filtros guardados
+window.addEventListener('DOMContentLoaded', () => {
+  const savedFilters = JSON.parse(localStorage.getItem('productsFilters') || '{}');
+  filterKeys.forEach(id => {
+    if (savedFilters[id] !== undefined && document.getElementById(id)) {
+      document.getElementById(id).value = savedFilters[id];
+    }
+  });
+  // Si hay filtros guardados y la URL no tiene parámetros, aplicar los filtros automáticamente
+  const hasParams = window.location.search.length > 1;
+  const hasSaved = Object.values(savedFilters).some(v => v);
+  if (hasSaved && !hasParams) {
+    filterProducts();
+  }
+});
+filterKeys.forEach(id => {
+  document.getElementById(id).addEventListener('change', filterProducts);
+});
+function filterProducts() {
+  const filters = {};
+  let params = [];
+  filterKeys.forEach(id => {
+    const val = document.getElementById(id).value;
+    filters[id] = val;
+    if (val) params.push(`${id}=${encodeURIComponent(val)}`);
+  });
+  localStorage.setItem('productsFilters', JSON.stringify(filters));
+  window.location.href = `/products?${params.join('&')}`;
+}
+</script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</script>
