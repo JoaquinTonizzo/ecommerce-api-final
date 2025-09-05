@@ -12,18 +12,18 @@
   <div id="pagination" style="display:flex; justify-content:center; gap:12px; margin:18px 0;"></div>
   <!-- Modal para agregar producto -->
   <div id="add-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.45); align-items:center; justify-content:center; z-index:9999;">
-    <div style="background:#232323; color:#fff; padding:32px 24px 18px 24px; border-radius:16px; min-width:320px; max-width:95vw; box-shadow:0 4px 32px #0008; position:relative; border:1.5px solid #ffd600;">
-      <button id="close-add-modal" style="position:absolute; top:8px; right:8px; background:none; border:none; font-size:1.5em; color:#ffd600; cursor:pointer;">&times;</button>
-      <h3 style="margin-bottom:18px; color:#ffd600;">Agregar producto</h3>
-      <form id="add-product-form" class="product-form">
-        <div class="form-row"><label for="title">Título</label><input type="text" name="title" id="title" placeholder="Título" autocomplete="off" required /></div>
-        <div class="form-row"><label for="description">Descripción</label><input type="text" name="description" id="description" placeholder="Descripción" autocomplete="off" required /></div>
-        <div class="form-row"><label for="code">Código</label><input type="text" name="code" id="code" placeholder="Código" autocomplete="off" required /></div>
-        <div class="form-row"><label for="price">Precio</label><input type="number" name="price" id="price" placeholder="Precio" autocomplete="off" required min="1" /></div>
-        <div class="form-row"><label for="stock">Stock</label><input type="number" name="stock" id="stock" placeholder="Stock" autocomplete="off" required min="0" /></div>
-        <div class="form-row"><label for="category">Categoría</label><input type="text" name="category" id="category" placeholder="Categoría" autocomplete="off" required /></div>
-        <div class="form-row"><label for="thumbnail">URL de imagen</label><input type="url" name="thumbnail" id="thumbnail" placeholder="URL de imagen" autocomplete="off" required /></div>
-        <div class="form-row"><label for="status">Activo</label><input type="checkbox" name="status" id="status" checked /></div>
+  <div style="background:#232323; color:#fff; padding:16px 12px 12px 12px; border-radius:14px; min-width:260px; max-width:400px; box-shadow:0 4px 32px #0008; position:relative; border:1.5px solid #ffd600; font-size:0.7em;">
+  <button id="close-add-modal" style="position:absolute; top:4px; right:8px; background:none; border:none; font-size:1.2em; color:#ffd600; cursor:pointer;">&times;</button>
+  <h3 style="margin-bottom:10px; color:#ffd600; font-size:1.08em;">Agregar producto</h3>
+  <form id="add-product-form" class="product-form" style="font-size:0.97em;">
+  <div class="form-row" style="margin-bottom:7px;"><label for="title" style="font-size:0.97em; margin-bottom:2px;">Título</label><input type="text" name="title" id="title" placeholder="Título" autocomplete="off" required /></div>
+  <div class="form-row" style="margin-bottom:7px;"><label for="description" style="font-size:0.97em; margin-bottom:2px;">Descripción</label><input type="text" name="description" id="description" placeholder="Descripción" autocomplete="off" required /></div>
+  <div class="form-row" style="margin-bottom:7px;"><label for="code" style="font-size:0.97em; margin-bottom:2px;">Código</label><input type="text" name="code" id="code" placeholder="Código" autocomplete="off" required /></div>
+  <div class="form-row" style="margin-bottom:7px;"><label for="price" style="font-size:0.97em; margin-bottom:2px;">Precio</label><input type="number" name="price" id="price" placeholder="Precio" autocomplete="off" required min="1" /></div>
+  <div class="form-row" style="margin-bottom:7px;"><label for="stock" style="font-size:0.97em; margin-bottom:2px;">Stock</label><input type="number" name="stock" id="stock" placeholder="Stock" autocomplete="off" required min="0" /></div>
+  <div class="form-row" style="margin-bottom:7px;"><label for="category" style="font-size:0.97em; margin-bottom:2px;">Categoría</label><input type="text" name="category" id="category" placeholder="Categoría" autocomplete="off" required /></div>
+  <div class="form-row" style="margin-bottom:7px;"><label for="thumbnail" style="font-size:0.97em; margin-bottom:2px;">URL de imagen</label><input type="url" name="thumbnail" id="thumbnail" placeholder="URL de imagen" autocomplete="off" required /></div>
+  <div class="form-row" style="margin-bottom:7px;"><label for="status" style="font-size:0.97em; margin-bottom:2px;">Activo</label><input type="checkbox" name="status" id="status" checked /></div>
   <button type="submit" class="form-btn" style="background:#ffd600; color:#181818; border-radius:8px; font-weight:600; font-size:1.07em; padding:10px 22px; box-shadow:0 1px 6px rgba(0,0,0,0.08); transition:background 0.18s, color 0.18s, box-shadow 0.18s; letter-spacing:0.2px;">Agregar producto</button>
         <div id="form-error" style="color:#d00; margin-top:8px; display:none;"></div>
       </form>
@@ -263,18 +263,18 @@
     editModal.style.justifyContent = 'center';
     editModal.style.zIndex = '9999';
     editModal.innerHTML = `
-      <div style="background:#232323; color:#fff; padding:32px 24px 18px 24px; border-radius:16px; min-width:320px; max-width:95vw; box-shadow:0 4px 32px #0008; position:relative; border:1.5px solid #ffd600;">
-        <button id="close-edit-modal" style="position:absolute; top:8px; right:8px; background:none; border:none; font-size:1.5em; color:#ffd600; cursor:pointer;">&times;</button>
-        <h3 style="margin-bottom:18px; color:#ffd600;">Editar producto</h3>
-        <form id="edit-product-form">
-          <div class="form-row"><label for="edit-title">Título</label><input type="text" id="edit-title" name="title" required /></div>
-          <div class="form-row"><label for="edit-description">Descripción</label><input type="text" id="edit-description" name="description" required /></div>
-          <div class="form-row"><label for="edit-code">Código</label><input type="text" id="edit-code" name="code" required /></div>
-          <div class="form-row"><label for="edit-price">Precio</label><input type="number" id="edit-price" name="price" required min="1" /></div>
-          <div class="form-row"><label for="edit-stock">Stock</label><input type="number" id="edit-stock" name="stock" required min="0" /></div>
-          <div class="form-row"><label for="edit-category">Categoría</label><input type="text" id="edit-category" name="category" required /></div>
-          <div class="form-row"><label for="edit-thumbnail">URL de imagen</label><input type="url" id="edit-thumbnail" name="thumbnail" required /></div>
-          <div class="form-row"><label for="edit-status">Activo</label><input type="checkbox" id="edit-status" name="status" /></div>
+  <div style="background:#232323; color:#fff; padding:16px 12px 12px 12px; border-radius:14px; min-width:260px; max-width:400px; box-shadow:0 4px 32px #0008; position:relative; border:1.5px solid #ffd600; font-size:0.7em;">
+  <button id="close-edit-modal" style="position:absolute; top:4px; right:8px; background:none; border:none; font-size:1.2em; color:#ffd600; cursor:pointer;">&times;</button>
+  <h3 style="margin-bottom:10px; color:#ffd600; font-size:1.08em;">Editar producto</h3>
+  <form id="edit-product-form" style="font-size:0.97em;">
+          <div class="form-row" style="margin-bottom:7px;"><label for="edit-title" style="font-size:0.97em; margin-bottom:2px;">Título</label><input type="text" id="edit-title" name="title" required /></div>
+          <div class="form-row" style="margin-bottom:7px;"><label for="edit-description" style="font-size:0.97em; margin-bottom:2px;">Descripción</label><input type="text" id="edit-description" name="description" required /></div>
+          <div class="form-row" style="margin-bottom:7px;"><label for="edit-code" style="font-size:0.97em; margin-bottom:2px;">Código</label><input type="text" id="edit-code" name="code" required /></div>
+          <div class="form-row" style="margin-bottom:7px;"><label for="edit-price" style="font-size:0.97em; margin-bottom:2px;">Precio</label><input type="number" id="edit-price" name="price" required min="1" /></div>
+          <div class="form-row" style="margin-bottom:7px;"><label for="edit-stock" style="font-size:0.97em; margin-bottom:2px;">Stock</label><input type="number" id="edit-stock" name="stock" required min="0" /></div>
+          <div class="form-row" style="margin-bottom:7px;"><label for="edit-category" style="font-size:0.97em; margin-bottom:2px;">Categoría</label><input type="text" id="edit-category" name="category" required /></div>
+          <div class="form-row" style="margin-bottom:7px;"><label for="edit-thumbnail" style="font-size:0.97em; margin-bottom:2px;">URL de imagen</label><input type="url" id="edit-thumbnail" name="thumbnail" required /></div>
+          <div class="form-row" style="margin-bottom:7px;"><label for="edit-status" style="font-size:0.97em; margin-bottom:2px;">Activo</label><input type="checkbox" id="edit-status" name="status" /></div>
           <button type="submit" class="form-btn" style="margin-top:12px;">Guardar cambios</button>
           <div id="edit-form-error" style="color:#d00; margin-top:8px; display:none;"></div>
         </form>
